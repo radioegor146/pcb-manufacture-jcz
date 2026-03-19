@@ -1,56 +1,30 @@
 # pcb-manufacture-jcz
 
-Generate SVGs from PCB Gerber files for laser manufacturing (LightBurn).
+\[WIP\] PCB manufacturing using JCZ UV laser
 
-## Setup
+*Currently, configuration shown here is TBD, do not use it*
 
-```sh
-uv venv
-uv pip install -r requirements.txt
-```
-
-## Usage
-
-### Copper layer
-
-Generates inverted SVG (black = etch, white = keep copper):
-
-```sh
-uv run python3 convert.py copper [--flip] [--brim <mm>] [-o <output.svg>] <edge_cuts.gbr> <copper.gbr>
-```
-
-### Edge cuts & drill holes
-
-Generates SVG with board outline and drill holes:
-
-```sh
-uv run python3 convert.py cuts [--flip] [--brim <mm>] [-o <output.svg>] <edge_cuts.gbr> [drl files...]
-```
-
-### Silkscreen
-
-Generates SVG with silkscreen layer, sized to match PCB outline:
-
-```sh
-uv run python3 convert.py silk [--flip] [--brim <mm>] [-o <output.svg>] <edge_cuts.gbr> <silkscreen.gbr>
-```
-
-### KiCad batch mode
-
-Auto-detects all Gerber/drill files in a KiCad export directory and generates all applicable SVGs:
-
-```sh
-uv run python3 convert.py kicad [--brim <mm>] [-o <output-dir>] <gerber-directory>
-```
-
-Looks for `*-Edge_Cuts.gbr`, `*-F_Cu.gbr`, `*-B_Cu.gbr`, `*-F_Silkscreen.gbr`, `*-B_Silkscreen.gbr`, `*-PTH.drl`, `*-NPTH.drl` and outputs to `<gerber-directory>/jcz-manufacture/`:
-
-- `copper_top.svg` / `copper_bottom.svg`
-- `silk_top.svg` / `silk_bottom.svg`
-- `cuts.svg`
-
-### Options
-
-- `--flip` — mirror on X axis (for bottom layers, individual commands only)
-- `--brim <mm>` — margin around PCB in mm (default: 1)
-- `-o` — output SVG path (individual) or directory (kicad)
+Order of operation:
+0. Convert your PCB production files using converter by reading and following [docs](CONVERTER.md)
+1. Turn on chiller
+2. Wait for it to reach 25°C
+3. Turn 3 buttons on laser ON in top-to-bottom order
+4. Remove safety cover (NOW THE LASER IS ARMED)
+5. Connect laser to the PC
+6. Set your laser head height based on your PCB stackup:
+  - Single sided, 1.5mm, 35µm: `193mm`
+7. Open Lightburn, configure it for your job:
+  - For copper: 
+    - Passes must be configured as `Type: Fill, Angle Increment: 45°, Interval: 0.04mm`
+    - Single sided, 1.5mm, 35µm:
+      1. N? passes of `Q-Pulse: 1ns, Frequency: 20kHz, Speed 100mm/s`
+      2. 1 pass of `Q-Pulse: 1ns, Frequency: 30kHz, Speed 350mm/s`
+  - For cuts (holes and edge): 
+    - ???
+8. Do your passes
+9. Disconnect laser from PC
+10. Attach safety cover (NOW THE LASER IS SAFE)
+11. Turn 3 buttons on the laser OFF in bottom-to-top order
+12. Turn off chiller
+13. ???
+14. PROFIT
