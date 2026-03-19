@@ -1,0 +1,7 @@
+click==8.3.1
+drawsvg==2.4.1
+numpy==2.4.3
+pillow==12.1.1
+pydantic==2.12.5
+pygerber==2.4.3
+shapely==2.1.2
