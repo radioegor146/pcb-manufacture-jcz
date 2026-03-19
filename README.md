@@ -5,6 +5,7 @@
 *Currently, configuration shown here is TBD, do not use it*
 
 Order of operation:
+
 0. Convert your PCB production files using converter by reading and following [docs](CONVERTER.md)
 1. Turn on chiller
 2. Wait for it to reach 25°C
