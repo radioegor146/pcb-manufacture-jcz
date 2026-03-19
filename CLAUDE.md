@@ -29,9 +29,25 @@ Use `--flip` for bottom layer gerbers (flips on X axis).
 Use `--brim` to set margin around PCB in mm (default: 1).
 Use `--linearization-step` to set arc linearization step in degrees (default: 1). Smaller = smoother arcs, larger = smaller SVG files.
 
+## Architecture
+
+The `copper` and `silk` commands use Shapely boolean geometry to produce LightBurn-compatible SVGs. Arcs are linearized (Shapely only supports linear coordinates) at a configurable step size.
+
+- **Copper**: `etch_areas = board_outline − copper_union` — each etch region is an independent `<path fill="black">`
+- **Silk**: silkscreen geometry is unioned and clipped to board outline — each region is an independent `<path fill="black">`
+- **Cuts**: uses stroke-based SVG rendering (no boolean ops)
+
+Key internal functions in `convert.py`:
+- `linearize_arc()` — converts pygerber Arc2/CCArc2 to point lists
+- `cmd_to_shapely()` / `commands_to_shapely()` — converts pygerber commands to Shapely geometries with polarity
+- `build_outline_polygon()` — chains edge cut segments (handles reversed segments) into a Shapely Polygon
+- `shapely_to_svg_paths()` — converts Shapely result to SVG `<path>` elements with Y-flip
+- `render_commands_to_drawing()` — legacy SVG renderer, still used by `cuts`
+
 ## Dependencies
 
 - Python 3.14 (managed via uv)
 - pygerber - Gerber/Excellon file parsing
+- shapely - Boolean geometry operations for copper/silk SVG generation
 - click - CLI framework
 - numpy, pillow, pydantic - Supporting libraries

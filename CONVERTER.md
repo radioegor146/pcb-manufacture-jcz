@@ -16,7 +16,7 @@ uv pip install -r requirements.txt
 Generates inverted SVG (black = etch, white = keep copper):
 
 ```sh
-uv run python3 convert.py copper [--flip] [--brim <mm>] [-o <output.svg>] <edge_cuts.gbr> <copper.gbr>
+uv run python3 convert.py copper [--flip] [--brim <mm>] [--linearization-step <deg>] [-o <output.svg>] <edge_cuts.gbr> <copper.gbr>
 ```
 
 ### Edge cuts & drill holes
@@ -32,7 +32,7 @@ uv run python3 convert.py cuts [--flip] [--brim <mm>] [-o <output.svg>] <edge_cu
 Generates SVG with silkscreen layer, sized to match PCB outline:
 
 ```sh
-uv run python3 convert.py silk [--flip] [--brim <mm>] [-o <output.svg>] <edge_cuts.gbr> <silkscreen.gbr>
+uv run python3 convert.py silk [--flip] [--brim <mm>] [--linearization-step <deg>] [-o <output.svg>] <edge_cuts.gbr> <silkscreen.gbr>
 ```
 
 ### KiCad batch mode
@@ -40,7 +40,7 @@ uv run python3 convert.py silk [--flip] [--brim <mm>] [-o <output.svg>] <edge_cu
 Auto-detects all Gerber/drill files in a KiCad export directory and generates all applicable SVGs:
 
 ```sh
-uv run python3 convert.py kicad [--brim <mm>] [-o <output-dir>] <gerber-directory>
+uv run python3 convert.py kicad [--brim <mm>] [--linearization-step <deg>] [-o <output-dir>] <gerber-directory>
 ```
 
 Looks for `*-Edge_Cuts.gbr`, `*-F_Cu.gbr`, `*-B_Cu.gbr`, `*-F_Silkscreen.gbr`, `*-B_Silkscreen.gbr`, `*-PTH.drl`, `*-NPTH.drl` and outputs to `<gerber-directory>/jcz-manufacture/`:
@@ -53,4 +53,5 @@ Looks for `*-Edge_Cuts.gbr`, `*-F_Cu.gbr`, `*-B_Cu.gbr`, `*-F_Silkscreen.gbr`, `
 
 - `--flip` — mirror on X axis (for bottom layers, individual commands only)
 - `--brim <mm>` — margin around PCB in mm (default: 1)
+- `--linearization-step <deg>` — arc linearization step in degrees (default: 1). Smaller values produce smoother arcs, larger values reduce SVG file size. Available on `copper`, `silk`, and `kicad` commands.
 - `-o` — output SVG path (individual) or directory (kicad)
